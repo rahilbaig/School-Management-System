@@ -1,0 +1,10 @@
+package com.example.demo;
+
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Component;
+
+@Component
+public interface ManagerRepo extends CrudRepository<Manager, Integer> {
+
+	public Manager validate(String email,String password);
+}

@@ -1,0 +1,117 @@
+package com.example.demo;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import jakarta.servlet.http.HttpSession;
+
+@Controller
+public class SchoolManagementController {
+
+	@Autowired
+	StudentRepo studentRepo;
+	@Autowired
+	TeacherRepo teacherRepo;
+	@Autowired
+	ManagerRepo managerRepo;
+	
+	@RequestMapping("/")
+	public String managerLogin() {
+		return "managerlogin.jsp";
+	}
+	
+	@RequestMapping("managerlogin")
+	public String managerlogin(String data,String password) {
+		Manager manager=managerRepo.validate(data, data);
+		if(manager!=null) {
+			if(manager.getEmail().equals(data) && manager.getPassword().equals(password)) {
+				return "main.jsp"; 
+			}
+			else {
+				return "error.jsp";
+			}
+		}
+		else {
+			return "error.jsp";
+		}
+	}
+	
+	@RequestMapping("addStudent")
+	public String addStudent() {
+		return "addstudent.jsp";
+	}
+	
+	@RequestMapping("studentadd")
+	public String studentadd(Student student) {
+		studentRepo.save(student);
+		return "main.jsp";
+	}
+	
+	@RequestMapping("addTeacher")
+	public String addTeacher() {
+		return "addTeacher.jsp";
+	}
+	
+	@RequestMapping("teacheradd")
+	public String teacheradd(Teacher teacher) {
+		teacherRepo.save(teacher);
+		return "main.jsp";
+	}
+	
+	
+	
+	@RequestMapping("teacherlogin")
+	public String teacherlogin(String data,String password) {
+		Teacher teacher=teacherRepo.validate(data, data);
+		if(teacher!=null) {
+			if(teacher.getEmail().equals(data) && teacher.getPassword().equals(password)) {
+				return "teacher.jsp"; 
+			}
+			else {
+				return "error.jsp";
+			}
+		}
+		else {
+			return "error.jsp";
+		}
+	}
+	
+	@RequestMapping("teacherpage")
+	public String teacherPage() {
+		return "teacherpage.jsp";
+	}
+	
+	public String getStudent(HttpSession s, String data,Integer id) {
+		Student student=studentRepo.getByIdOrName(data, id);
+		
+		if(student!=null) {
+			
+			double fees=100000;
+			
+			if(fees==student.getFees()) {
+				s.setAttribute("id", student.getName());
+				s.setAttribute("name", student.getName());
+				s.setAttribute("age", student.getName());
+				s.setAttribute("gender", student.getName());
+				s.setAttribute("fees", student.getName());
+				s.setAttribute("course", student.getName());
+				s.setAttribute("balfees", 0);
+				return "studentdetails.jsp";
+			}
+			else {
+				fees=(fees-student.getFees());
+				s.setAttribute("id", student.getName());
+				s.setAttribute("name", student.getName());
+				s.setAttribute("age", student.getName());
+				s.setAttribute("gender", student.getName());
+				s.setAttribute("fees", student.getName());
+				s.setAttribute("course", student.getName());
+				s.setAttribute("balfees", fees);
+				return "studentdetails.jsp";
+			}
+		}
+		
+	}
+	
+}
